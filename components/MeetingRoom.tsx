@@ -1,3 +1,4 @@
+'use client';
 import { cn } from '@/lib/utils'
 import { CallControls, CallParticipantsList, CallStatsButton, CallingState, PaginatedGridLayout, SpeakerLayout, useCallStateHooks } from '@stream-io/video-react-sdk'
 import React, { useState } from 'react'
