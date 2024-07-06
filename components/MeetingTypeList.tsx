@@ -81,9 +81,19 @@ const MeetingTypeList = () => {
       <HomeCard img="/icons/join-meeting.svg" title="Join Meeting" description="via invitation link" 
       handleClick={()=>{setMeetingState('isJoiningMeeting')}}
       // handleClick={()=> router.push('/recordings')}
-      
       className="bg-yellow-1"/>
 
+      { !callDetails ? (
+        <MeetingModal isOpen={meetingState === 'isScheduleMeeting'} onClose={()=>{setMeetingState(undefined)}}
+        title="Create Meeting"
+        handleClick={createMeeting}/>
+      ): (
+        <MeetingModal isOpen={meetingState === 'isScheduleMeeting'} onClose={()=>{setMeetingState(undefined)}}
+      title="Meeting Created"
+      className="text-center"
+      buttonText="Start Meeting"
+      handleClick={createMeeting}/>
+      )}
       <MeetingModal isOpen={meetingState === 'isInstantMeeting'} onClose={()=>{setMeetingState(undefined)}}
       title="Start an Instant Meeting"
       className="text-center"
