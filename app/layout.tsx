@@ -13,6 +13,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "MOOZ",
   description: "Video Calling web Application",
+  icons:{
+    icon:'/icons/logo.svg'
+  }
 };
 
 export default function RootLayout({
