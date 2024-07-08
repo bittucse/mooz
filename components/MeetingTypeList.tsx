@@ -67,6 +67,7 @@ const MeetingTypeList = () => {
     }
   }
 
+  const meetingLink= `${process.env.NEXT_PUBLIC_BASE_URL}/meeting/${callDetails?.id}`
 
   return (
     <section className=' grid grid-cols-1 gap-5
@@ -99,7 +100,16 @@ const MeetingTypeList = () => {
           </div>
           <div className=' flex w-full flex-col gap-2.5'>
             <label className=' text-base text-normal leading-[22px] text-sky-1' >Select date and time</label>
-            <ReactDatepicker/>
+            <ReactDatepicker
+            selected={values.dateTime}
+            onChange={(date)=>setValues({...values,dateTime:date!})}
+            showTimeSelect
+            timeFormat='HH:mm'
+            timeIntervals={15}
+            timeCaption='time'
+            dateFormat="MMMM d, yyyy h:mm aa"
+            className=' w-full rounded bg-dark-3 p-2 focus:outline-none'
+            />
           </div>
         </MeetingModal>
       ): (
@@ -108,8 +118,8 @@ const MeetingTypeList = () => {
       className="text-center"
       buttonText="copy Meeting Link"
       handleClick={()=>{
-        // navigator.clipboard.writeText(meetingLink);
-        // toast({title:'Link copied'})
+        navigator.clipboard.writeText(meetingLink);
+        toast({title:'Link copied'})
 
       }}
       image='/icons/checked.svg'
