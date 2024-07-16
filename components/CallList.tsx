@@ -4,7 +4,7 @@
 import { useGetCalls } from '@/hooks/useGetCalls'
 import { Call, CallRecording } from '@stream-io/video-react-sdk';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import MeetingCard from './MeetingCard';
 import Loader from './Loader';
 
@@ -43,6 +43,21 @@ const CallList = ({type}:{type: 'ended' | 'upcoming' | 'recordings'}) => {
     }
   }
 
+  useEffect(()=>{
+    const fetchRecordings = async()=>{
+      const callData= await Promise.all(callRecordings.map((meeting)=>meeting.queryRecordings()))
+
+      const recordings = callData
+      .filter((call) => call.recordings.length > 0)
+      .flatMap((call) => call.recordings);
+
+        setRecordings(recordings);
+    }
+
+    if(type==='recordings') fetchRecordings();
+  },[type,callRecordings])
+
+
   const calls=getCalls();
   const noCallsMessage=getNOCallsMessage();
 
@@ -57,7 +72,7 @@ const CallList = ({type}:{type: 'ended' | 'upcoming' | 'recordings'}) => {
           type=== 'ended' ? '/icons/previous.svg':
           type=== 'upcoming' ? '/icons/upcoming.svg':'/icons/recordings.svg'
         }
-        title={(meeting as Call).state.custom.description.substring(0,20)|| 'No description'}
+        title={(meeting as Call).state?.custom.description.substring(0,20)|| 'No description'}
         date={
           (meeting as Call).state?.startsAt?.toLocaleString() ||
           (meeting as CallRecording).start_time?.toLocaleString()
