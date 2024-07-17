@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import MeetingCard from './MeetingCard';
 import Loader from './Loader';
+import { useToast } from './ui/use-toast';
 
 
 const CallList = ({type}:{type: 'ended' | 'upcoming' | 'recordings'}) => {
@@ -15,6 +16,7 @@ const CallList = ({type}:{type: 'ended' | 'upcoming' | 'recordings'}) => {
   const router=useRouter();
   const [recordings, setRecordings] = useState<CallRecording[]>([])
 
+  const {toast} = useToast();
   const getCalls = ()=>{
     switch (type) {
       case 'ended':
@@ -42,16 +44,23 @@ const CallList = ({type}:{type: 'ended' | 'upcoming' | 'recordings'}) => {
         return [];
     }
   }
-
+ // fix this useEffect
   useEffect(()=>{
     const fetchRecordings = async()=>{
-      const callData= await Promise.all(callRecordings.map((meeting)=>meeting.queryRecordings()))
+
+      try {
+        const callData= await Promise.all(callRecordings.map((meeting)=>meeting.queryRecordings()))
 
       const recordings = callData
       .filter((call) => call.recordings.length > 0)
       .flatMap((call) => call.recordings);
 
         setRecordings(recordings);
+      } catch (error) {
+        toast({title:'Try again later'})
+      }
+
+      
     }
 
     if(type==='recordings') fetchRecordings();
@@ -72,7 +81,7 @@ const CallList = ({type}:{type: 'ended' | 'upcoming' | 'recordings'}) => {
           type=== 'ended' ? '/icons/previous.svg':
           type=== 'upcoming' ? '/icons/upcoming.svg':'/icons/recordings.svg'
         }
-        title={(meeting as Call).state?.custom.description.substring(0,20)|| 'No description'}
+        title={(meeting as Call).state?.custom.description.substring(0,26)||meeting.filename.substring(0,20) || 'No description'}
         date={
           (meeting as Call).state?.startsAt?.toLocaleString() ||
           (meeting as CallRecording).start_time?.toLocaleString()
